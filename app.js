@@ -12,7 +12,7 @@ const NotFoundError = require('./errors/NotFoundError.js');
 const app = express();
 
 mongoose.connect(
-  process.env.MONGODB_URL || 'mongodb://localhost:27017/mestodb',
+  process.env.MONGODB_URL || 'mongodb://localhost:27017/newsdb',
   {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3000;
 
 const userRoutes = require('./routes/users.js');
 const authRoutes = require('./routes/auth.js');
-const cardRoutes = require('./routes/articals.js');
+const articleRoutes = require('./routes/articals.js');
 
 app.use(cors());
 app.use(requestLogger); // подключаем логгер запросов
@@ -47,7 +47,7 @@ app.use('/', authRoutes);
 app.use(auth);
 
 app.use('/', userRoutes);
-app.use('/', cardRoutes);
+app.use('/', articleRoutes);
 
 app.use((_req, _res, next) => {
   const err = new NotFoundError('Страница не найдена');

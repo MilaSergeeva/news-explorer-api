@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       required: [true, '"name" must be filled out'],
       minlength: [2, 'Minimal length of "name" - 2'],
       maxlength: [30, 'Maximal length of "name" - 30'],
-      default: 'Имя',
+      default: 'Имя Фамилия',
     },
     avatar: {
       type: String,
@@ -28,12 +28,8 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, '"password" must be filled out'],
       select: false,
-      validate: {
-        validator: (password) => validator.notEmpty(password),
-        message: '"password" must be filled out',
-      },
     },
   },
   { versionKey: false },
@@ -45,6 +41,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       // не нашёлся — отклоняем промис
       if (!user) {
+        // define other error
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
 

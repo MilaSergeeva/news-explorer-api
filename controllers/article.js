@@ -4,11 +4,11 @@ const BadRequestError = require('../errors/BadRequestError.js');
 const ForbiddenError = require('../errors/ForbiddenError.js');
 
 // создаем карточку
-const createArticleCard = (req, res, next) => {
+const saveArticleCard = (req, res, next) => {
   const owner = req.user._id;
-  const { name, link } = req.body;
+  const { title, link } = req.body;
 
-  Article.create({ owner, name, link })
+  Article.create({ owner, title, link })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -82,9 +82,7 @@ const deleteArticleCard = (req, res, next) => {
 // };
 
 module.exports = {
-  createArticleCard,
+  saveArticleCard,
   getArticleCards,
   deleteArticleCard,
-  addLikeToArticleCard,
-  deleteLikeToArticleCard,
 };
