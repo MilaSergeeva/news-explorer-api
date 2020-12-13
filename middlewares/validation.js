@@ -16,7 +16,7 @@ const validateObjectId = celebrate({
 });
 
 const validateArticleBody = celebrate({
-  params: Joi.object().keys({
+  body: Joi.object().keys({
     title: Joi.string()
       .required()
       .messages({ 'string.required': '"title" must be filled out' }),
@@ -43,6 +43,7 @@ const validateArticleBody = celebrate({
         return helpers.message('the URL of the link is not valid');
       }),
     date: Joi.date().required(),
+    source: Joi.string().required(),
   }),
 });
 

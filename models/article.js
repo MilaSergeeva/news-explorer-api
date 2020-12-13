@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const articleSchema = new mongoose.Schema(
   {
@@ -26,7 +27,7 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: [true, '"link" must be filled out'],
       validate: {
-        validator: (url) => validator.isUrl(url),
+        validator: (url) => validator.isURL(url),
         message: 'the URL of the link is not valid',
       },
     },
@@ -34,7 +35,7 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: [true, '"image" must be filled out'],
       validate: {
-        validator: (url) => validator.isUrl(url),
+        validator: (url) => validator.isURL(url),
         message: 'the URL of the remote image is not valid',
       },
     },

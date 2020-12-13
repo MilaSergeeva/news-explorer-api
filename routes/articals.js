@@ -6,15 +6,15 @@ const {
 } = require('../middlewares/validation.js');
 
 const {
-  saveArticleCard,
-  getArticleCards,
-  deleteArticleCard,
+  createUserArticle,
+  getUserArticles,
+  deleteUserArticle,
 } = require('../controllers/article');
 
-router.get('/articles', getArticleCards);
+router.get('/articles', getUserArticles);
 
-router.post('/articles', validateArticleBody, saveArticleCard);
+router.post('/articles', validateArticleBody, createUserArticle);
 
-router.delete('/articles/:articleId', validateObjectId, deleteArticleCard);
+router.delete('/articles/:articleId', validateObjectId, deleteUserArticle);
 
 module.exports = router;
