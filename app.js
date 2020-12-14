@@ -61,12 +61,15 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 // обрабатка ошибки централизованно
-app.use((err, _req, res, _next) => {
+
+app.use((err, _req, res, next) => {
   const { statusCode = 500, message } = err;
 
   res.status(statusCode).send({
     message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
   });
+
+  next();
 });
 
 app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
