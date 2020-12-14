@@ -9,33 +9,30 @@ const { JWT_SECRET } = process.env;
 
 // создаем пользователя
 const createUser = (req, res, next) => {
-  const { name, avatar, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-  bcrypt.hash(password, 10).then((hash) =>
-    User.create({
-      name,
-      avatar,
-      email,
-      password: hash,
-    })
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          next(
-            new BadRequestError(
-              `Переданы некорректные данные. Ошибка: ${err.message}`,
-            ),
-          );
-        } else if (err.message.includes('duplicate key error collection')) {
-          next(
-            new ConflictError(
-              'Переданы некорректные данные. Такой Email уже использован',
-            ),
-          );
-        }
-        next(err);
-      }),
-  );
+  bcrypt.hash(password, 10).then((hash) => User.create({
+    name,
+    email,
+    password: hash,
+  })
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(
+          new BadRequestError(
+            `Переданы некорректные данные. Ошибка: ${err.message}`,
+          ),
+        );
+      } else if (err.message.includes('duplicate key error collection')) {
+        next(
+          new ConflictError(
+            'Переданы некорректные данные. Такой Email уже использован',
+          ),
+        );
+      }
+      next(err);
+    }));
 };
 
 // находим пользователя
@@ -50,7 +47,6 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user);
       if (!user) {
         throw new UnauthorizedError('Ошибка аутентификации');
       }

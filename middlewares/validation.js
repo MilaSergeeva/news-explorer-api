@@ -3,16 +3,18 @@ const { ObjectId } = require('mongoose').Types;
 const validator = require('validator');
 
 const validateObjectId = celebrate({
-  params: Joi.object().keys({
-    id: Joi.string()
-      .required()
-      .custom((value, helpers) => {
-        if (ObjectId.isValid(value)) {
-          return value;
-        }
-        return helpers.message('id not valid');
-      }),
-  }),
+  params: Joi.object()
+    .keys({
+      articleId: Joi.string()
+        .required()
+        .custom((value, helpers) => {
+          if (ObjectId.isValid(value)) {
+            return value;
+          }
+          return helpers.message('id not valid');
+        }),
+    })
+    .unknown(true),
 });
 
 const validateArticleBody = celebrate({
@@ -54,14 +56,14 @@ const validateUserBody = celebrate({
       'string.min': 'min length of "name" - 2',
       'string.max': 'max length of "name" - 30',
     }),
-    avatar: Joi.string()
-      .custom((value, helpers) => {
-        if (validator.isURL(value)) {
-          return value;
-        }
-        return helpers.message('the URL of the link is not valid');
-      })
-      .messages({ 'string.required': '"avatar" must be filled out' }),
+    // avatar: Joi.string()
+    //   .custom((value, helpers) => {
+    //     if (validator.isURL(value)) {
+    //       return value;
+    //     }
+    //     return helpers.message('the URL of the link is not valid');
+    //   })
+    //   .messages({ 'string.required': '"avatar" must be filled out' }),
     email: Joi.string()
       .required()
       .email()

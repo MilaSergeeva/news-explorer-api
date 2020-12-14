@@ -1,23 +1,29 @@
 const Article = require('../models/article');
-const NotFoundError = require('../errors/NotFoundError.js');
 const BadRequestError = require('../errors/BadRequestError.js');
 const ForbiddenError = require('../errors/ForbiddenError.js');
 
 // сохраняем карточку
 const createUserArticle = (req, res, next) => {
   const owner = req.user._id;
-  const { keyword, title, text, date, source, link, image } = req.body;
+  const {
+    keyword, title, text, date, source, link, image,
+  } = req.body;
 
-  Article.create({ owner, keyword, title, text, date, source, link, image })
+  Article.create({
+    owner,
+    keyword,
+    title,
+    text,
+    date,
+    source,
+    link,
+    image,
+  })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      console.log(err.name, err.message);
       if (err.name === 'ValidationError') {
-        console.log('krab');
-        next(
-          new BadRequestError(
-            `Переданы некорректные данные. Ошибка: ${err.message}`,
-          ),
+        throw new BadRequestError(
+          `Переданы некорректные данные. Ошибка: ${err.message}`,
         );
       }
       next(err);
@@ -38,7 +44,7 @@ const deleteUserArticle = (req, res, next) => {
         throw new ForbiddenError('Недостаточно прав для удаления карточки');
       }
 
-      res.status(200).send(card);
+      res.status(200).send(article);
     })
     .catch((err) => {
       next(err);

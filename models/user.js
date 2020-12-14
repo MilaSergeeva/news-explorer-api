@@ -11,12 +11,6 @@ const userSchema = new mongoose.Schema(
       maxlength: [30, 'Maximal length of "name" - 30'],
       default: 'Имя Фамилия',
     },
-    avatar: {
-      type: String,
-      required: true,
-      default:
-        'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    },
     email: {
       type: String,
       required: [true, '"email" must be filled out'],
@@ -35,7 +29,10 @@ const userSchema = new mongoose.Schema(
   { versionKey: false },
 );
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password,
+) {
   return this.findOne({ email })
     .select('+password')
     .then((user) => {
