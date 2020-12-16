@@ -15,8 +15,9 @@ const auth = (req, _res, next) => {
   try {
     payload = jwt.verify(token, jwtSecret); // верифицируем токен
   } catch (e) {
-    const err = new Error('Необходима авторизация. Токен не валидный.');
-    err.statusCode = 401;
+    const err = new UnauthorizedError(
+      'Необходима авторизация. Токен не валидный.',
+    );
 
     next(err);
   }

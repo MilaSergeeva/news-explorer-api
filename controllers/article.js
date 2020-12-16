@@ -6,7 +6,9 @@ const NotFoundError = require('../errors/NotFoundError');
 // сохраняем карточку
 const createUserArticle = (req, res, next) => {
   const owner = req.user._id;
-  const { keyword, title, text, date, source, link, image } = req.body;
+  const {
+    keyword, title, text, date, source, link, image,
+  } = req.body;
 
   Article.create({
     owner,
