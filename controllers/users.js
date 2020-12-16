@@ -4,35 +4,37 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError.js');
 const UnauthorizedError = require('../errors/UnauthorizedError.js');
 const ConflictError = require('../errors/ConflictError.js');
-
-const { JWT_SECRET } = process.env;
+const { jwtSecret } = require('../config');
 
 // создаем пользователя
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
-  bcrypt.hash(password, 10).then((hash) => User.create({
-    name,
-    email,
-    password: hash,
-  })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(
-          new BadRequestError(
-            `Переданы некорректные данные. Ошибка: ${err.message}`,
-          ),
-        );
-      } else if (err.message.includes('duplicate key error collection')) {
-        next(
-          new ConflictError(
-            'Переданы некорректные данные. Такой Email уже использован',
-          ),
-        );
-      }
-      next(err);
-    }));
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({
+      name,
+      email,
+      password: hash,
+    })
+      .then((user) => res.send(user))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          next(
+            new BadRequestError(
+              `Переданы некорректные данные. Ошибка: ${err.message}`,
+            ),
+          );
+        } else if (err.name === 'MongoError' && err.code === 11000) {
+          next(
+            new ConflictError(
+              'Переданы некорректные данные. Такой Email уже использован',
+            ),
+          );
+        } else {
+          next(err);
+        }
+      });
+  });
 };
 
 // находим пользователя
@@ -48,9 +50,8 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Ошибка аутентификации');
+        next(new UnauthorizedError('Ошибка аутентификации'));
       }
-      const jwtSecret = JWT_SECRET;
       // аутентификация успешна
       const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
 

@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError.js');
+const { jwtSecret } = require('../config');
 
-const auth = (req, res, next) => {
+const auth = (req, _res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -10,11 +11,10 @@ const auth = (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
 
   let payload;
-  const { JWT_SECRET = 'dev-key' } = process.env;
 
   try {
     // верифицируем токен
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, jwtSecret);
   } catch (e) {
     // отправим ошибку, если не получилось
     const err = new Error('Необходима авторизация. Токен не валидный.');

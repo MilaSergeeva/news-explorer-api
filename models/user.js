@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema(
       required: [true, '"name" must be filled out'],
       minlength: [2, 'Minimal length of "name" - 2'],
       maxlength: [30, 'Maximal length of "name" - 30'],
-      default: 'Имя Фамилия',
     },
     email: {
       type: String,
