@@ -65,21 +65,6 @@ const deleteUserArticle = (req, res, next) => {
     });
 };
 
-// удаляем карточку
-// const deleteUserArticle = (req, res, next) => {
-//   Article.findOneAndDelete({ _id: req.params.articleId, owner: req.user._id })
-//     .then((article) => {
-//       if (!article) {
-//         next(new ForbiddenError('Недостаточно прав для удаления карточки'));
-//       }
-
-//       res.status(200).send(article);
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
-
 module.exports = {
   createUserArticle,
   getUserArticles,

@@ -13,10 +13,8 @@ const auth = (req, _res, next) => {
   let payload;
 
   try {
-    // верифицируем токен
-    payload = jwt.verify(token, jwtSecret);
+    payload = jwt.verify(token, jwtSecret); // верифицируем токен
   } catch (e) {
-    // отправим ошибку, если не получилось
     const err = new Error('Необходима авторизация. Токен не валидный.');
     err.statusCode = 401;
 

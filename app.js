@@ -8,18 +8,20 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/error-handler.js');
+const { rateLimiter } = require('./middlewares/rate-limiter');
+const {
+  mongodbURL,
+  rateLimiter: rateLimiterConfig,
+} = require('./config/index.js');
 
 const app = express();
 
-mongoose.connect(
-  process.env.MONGODB_URL || 'mongodb://localhost:27017/newsdb',
-  {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  },
-);
+mongoose.connect(mongodbURL, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -28,21 +30,19 @@ const routes = require('./routes/index');
 app.use(cors());
 app.use(requestLogger); // подключаем логгер запросов
 app.use(helmet());
+app.set('trust proxy', rateLimiterConfig.trustProxy);
+app.use(rateLimiter);
 
-// support parsing of application/json type post data
-app.use(bodyParser.json());
-// support parsing of application/x-www-form-urlencoded post data
+app.use(bodyParser.json()); // support parsing of application/json type post data
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api', routes);
 
 app.use(errorLogger); // подключаем логгер ошибок
 
-// обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
-// обрабатка ошибки централизованно
-
-app.use(errorHandler);
+app.use(errorHandler); // обрабатка ошибки централизованно
 
 app.listen(PORT, () => console.log(`server is running on port ${PORT}`));

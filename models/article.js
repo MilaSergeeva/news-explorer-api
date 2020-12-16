@@ -49,7 +49,7 @@ const articleSchema = new mongoose.Schema(
   { versionKey: false },
 );
 
-// удаляем пароль из ответа
+// удаляем owner из ответа
 articleSchema.methods.toJSON = function deleteOwner() {
   const obj = this.toObject();
 

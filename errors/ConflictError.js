@@ -1,4 +1,6 @@
-class ConflictError extends Error {
+const ApplicationError = require('./ApplicationError');
+
+class ConflictError extends ApplicationError {
   constructor(message) {
     super(message);
     this.statusCode = 409;
