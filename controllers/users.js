@@ -5,6 +5,11 @@ const BadRequestError = require('../errors/BadRequestError.js');
 const UnauthorizedError = require('../errors/UnauthorizedError.js');
 const ConflictError = require('../errors/ConflictError.js');
 const { jwtSecret } = require('../config');
+const {
+  badRequestErrorMsg,
+  conflictErrorMsg,
+  unauthorizedErrorMsg,
+} = require('../errors/errorMasseges.js');
 
 // создаем пользователя
 const createUser = (req, res, next) => {
@@ -21,15 +26,11 @@ const createUser = (req, res, next) => {
         if (err.name === 'ValidationError') {
           next(
             new BadRequestError(
-              `Переданы некорректные данные. Ошибка: ${err.message}`,
+              badRequestErrorMsg + `. Ошибка: ${err.message}`,
             ),
           );
         } else if (err.name === 'MongoError' && err.code === 11000) {
-          next(
-            new ConflictError(
-              'Переданы некорректные данные. Такой Email уже использован',
-            ),
-          );
+          next(new ConflictError(conflictErrorMsg));
         } else {
           next(err);
         }
@@ -50,7 +51,7 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        next(new UnauthorizedError('Ошибка аутентификации'));
+        next(new UnauthorizedError(unauthorizedErrorMsg));
       }
       // аутентификация успешна
       const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
@@ -61,9 +62,7 @@ const login = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'Error') {
         next(
-          new BadRequestError(
-            `Переданы некорректные данные. Ошибка: ${err.message}`,
-          ),
+          new BadRequestError(badRequestErrorMsg + `. Ошибка: ${err.message}`),
         );
       } else {
         next(err);

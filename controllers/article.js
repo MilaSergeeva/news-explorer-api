@@ -2,13 +2,16 @@ const Article = require('../models/article');
 const BadRequestError = require('../errors/BadRequestError.js');
 const ForbiddenError = require('../errors/ForbiddenError.js');
 const NotFoundError = require('../errors/NotFoundError');
+const {
+  badRequestErrorMsg,
+  notFoundErrorMsg,
+  forbiddenErrorMsg,
+} = require('../errors/errorMasseges.js');
 
 // сохраняем карточку
 const createUserArticle = (req, res, next) => {
   const owner = req.user._id;
-  const {
-    keyword, title, text, date, source, link, image,
-  } = req.body;
+  const { keyword, title, text, date, source, link, image } = req.body;
 
   Article.create({
     owner,
@@ -24,9 +27,7 @@ const createUserArticle = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(
-          new BadRequestError(
-            `Переданы некорректные данные. Ошибка: ${err.message}`,
-          ),
+          new BadRequestError(badRequestErrorMsg + `. Ошибка: ${err.message}`),
         );
       } else {
         next(err);
@@ -43,7 +44,7 @@ const getUserArticles = (req, res, next) => {
 const deleteUserArticle = (req, res, next) => {
   Article.findById({ _id: req.params.articleId })
     .orFail(() => {
-      const error = new NotFoundError('Нет статьи по заданному id');
+      const error = new NotFoundError(notFoundErrorMsg);
 
       throw error;
     })
@@ -57,7 +58,7 @@ const deleteUserArticle = (req, res, next) => {
     })
     .then((deleteResult) => {
       if (deleteResult.deletedCount === 0) {
-        throw new ForbiddenError('Недостаточно прав для удаления карточки');
+        throw new ForbiddenError(forbiddenErrorMsg);
       }
 
       res.status(200).send();
