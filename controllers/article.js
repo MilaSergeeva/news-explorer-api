@@ -61,7 +61,7 @@ const deleteUserArticle = (req, res, next) => {
         throw new ForbiddenError(forbiddenErrorMsg);
       }
 
-      res.status(200).send();
+      res.status(200).send('Статья удалена');
     })
     .catch((err) => {
       next(err);

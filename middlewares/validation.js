@@ -31,7 +31,12 @@ const validateArticleBody = celebrate({
     link: Joi.string()
       .required()
       .custom((value, helpers) => {
-        if (validator.isURL(value)) {
+        if (
+          validator.isURL(value, {
+            protocols: ['http', 'https'],
+            require_protocol: true,
+          })
+        ) {
           return value;
         }
         return helpers.message('the URL of the link is not valid');
@@ -39,16 +44,26 @@ const validateArticleBody = celebrate({
     image: Joi.string()
       .required()
       .custom((value, helpers) => {
-        if (validator.isURL(value)) {
+        if (
+          validator.isURL(value, {
+            protocols: ['http', 'https'],
+            require_protocol: true,
+          })
+        ) {
           return value;
         }
-        return helpers.message('the URL of the link is not valid');
+        return helpers.message('the URL of the remote image is not valid');
       }),
     date: Joi.string().required(),
     source: Joi.string()
       .required()
       .custom((value, helpers) => {
-        if (validator.isURL(value)) {
+        if (
+          validator.isURL(value, {
+            protocols: ['http', 'https'],
+            require_protocol: true,
+          })
+        ) {
           return value;
         }
         return helpers.message('the URL of the "source" is not valid');

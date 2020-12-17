@@ -17,10 +17,5 @@ router.use(auth);
 
 router.use('/', userRoutes);
 router.use('/', articleRoutes);
-router.use((_req, _res, next) => {
-  const err = new NotFoundError('Страница не найдена');
-
-  next(err);
-});
 
 module.exports = router;

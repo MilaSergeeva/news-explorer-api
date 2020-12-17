@@ -2,6 +2,8 @@ const badRequestErrorMsg = 'Переданы некорректные данны
 
 const notFoundErrorMsg = 'Нет статьи по заданному id';
 
+const notFoundPageErrorMsg = 'Страница не найдена';
+
 const forbiddenErrorMsg = 'Недостаточно прав для удаления карточки';
 
 const conflictErrorMsg =
@@ -21,4 +23,5 @@ module.exports = {
   unauthorizedErrorMsg,
   JWTErrorMsg,
   serverErrorMsg,
+  notFoundPageErrorMsg,
 };

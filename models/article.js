@@ -22,6 +22,10 @@ const articleSchema = new mongoose.Schema(
     source: {
       type: String,
       required: [true, '"source" must be filled out'],
+      validate: {
+        validator: (url) => validator.isURL(url),
+        message: 'the URL of the "sourse" is not valid',
+      },
     },
     link: {
       type: String,

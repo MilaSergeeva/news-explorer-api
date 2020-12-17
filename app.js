@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const errorHandler = require('./middlewares/error-handler.js');
+const { errorHandler, invalidPath } = require('./middlewares/error-handler.js');
 const { rateLimiter } = require('./middlewares/rate-limiter');
 const {
   mongodbURL,
@@ -38,6 +38,8 @@ app.use(bodyParser.json()); // support parsing of application/json type post dat
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api', routes);
+
+app.use(invalidPath);
 
 app.use(errorLogger); // подключаем логгер ошибок
 
